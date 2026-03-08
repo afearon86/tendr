@@ -99,9 +99,9 @@ tr.sec-row:hover .del-sec-btn{opacity:1;}
 .auth-forgot:hover{text-decoration:underline;}
 .nav-avatar{width:28px;height:28px;border-radius:50%;background:var(--accent);color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .nav-username{font-size:11.5px;font-weight:500;color:var(--t2);}
-.save-indicator{font-size:11px;font-weight:600;color:var(--t3);padding:3px 10px;border-radius:20px;background:var(--s2);border:1px solid var(--border);transition:all .3s;white-space:nowrap;}
-.save-indicator.dirty{color:var(--amber);background:var(--ambs);border-color:var(--amber);}
-.save-indicator.error{color:var(--warn);background:var(--ws);border-color:var(--warn);}
+.save-indicator{font-size:11px;font-weight:500;color:var(--t3);transition:color .3s;line-height:1;align-self:center;}
+.save-indicator.dirty{color:var(--t2);}
+.save-indicator.error{color:var(--warn);}
 #adminNavBtn{min-width:90px;text-align:center;}
 
 /* -- PROJECTS SCREEN -------------------------- */
@@ -1760,7 +1760,7 @@ tr.pdf-tot td{color:white;font-weight:600;}
 
 
 /* -- PROGRAMME TAB -- */
-.prog-outer{padding:24px;}
+.prog-outer{padding:0;}
 .prog-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .prog-title{font-family:var(--sans);font-size:15px;font-weight:700;color:var(--text);}
 .prog-subtitle{font-size:12px;color:var(--t2);margin-top:2px;}
@@ -1807,7 +1807,7 @@ tr.pdf-tot td{color:white;font-weight:600;}
 .prog-tl-phase-row:hover .prog-del-btn{opacity:1 !important;}
 .prog-tl-phase-row .prog-del-btn{background:none;border:none;color:var(--t3);cursor:pointer;transition:opacity .15s,color .15s;line-height:1;flex-shrink:0;}
 .prog-tl-phase-row .prog-del-btn:hover{color:var(--warn);}
-.prog-tl-outer{overflow-x:auto;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;}
+.prog-tl-outer{overflow-x:auto;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;width:100%;box-sizing:border-box;}
 .prog-tl-outer-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
 .prog-tl-outer-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--t3);}
 .prog-tl-canvas{position:relative;user-select:none;}
@@ -3275,7 +3275,6 @@ tr.pdf-tot td{color:white;font-weight:600;}
     </div>
     <div class="proj-home-tabs">
       <button class="proj-home-tab active" id="phtPackages" onclick="switchProjHomeTab('packages',this)">Packages</button>
-      <button class="proj-home-tab" id="phtProgramme" onclick="switchProjHomeTab('programme',this)">Programme</button>
       <button class="proj-home-tab" id="phtPrelims" onclick="switchProjHomeTab('prelims',this)">Prelims</button>
       <button class="proj-home-tab" id="phtRisk" onclick="switchProjHomeTab('risk',this)">Risk</button>
       <button class="proj-home-tab" id="phtOhp" onclick="switchProjHomeTab('ohp',this)">On-costs</button>
@@ -3335,73 +3334,104 @@ tr.pdf-tot td{color:white;font-weight:600;}
 
     <!-- PRELIMS TAB — new two-panel layout -->
     <div class="proj-home-panel" id="phPanelPrelims">
-      <!-- Bridge strip (cost summary) -->
-      <div id="prelimsBridgeStrip" class="tab-bridge-strip cols-4" style="display:none"></div>
 
-      <!-- TWO-PANEL BODY -->
-      <div id="prelimsTwoPanel" style="display:flex;gap:0;height:calc(100vh - 200px);min-height:480px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface)">
-
-        <!-- LEFT: Person list -->
-        <div id="prelimsLeftPanel" style="width:295px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--surface)">
-          <!-- Phase colour strip -->
-          <div id="prelimsPhaseStrip" style="display:flex;border-bottom:1px solid var(--border);flex-shrink:0"></div>
-          <!-- Toolbar -->
-          <div style="display:flex;gap:6px;padding:8px 10px;border-bottom:1px solid var(--border);flex-shrink:0;align-items:center">
-            <input class="lib-search" id="prelimSearch" placeholder="Search…" oninput="filterPrelims()" style="flex:1;font-size:11px;height:28px">
-            <button class="btn primary sm" onclick="openResourcePickerWithTBC()">+ Person</button>
-          </div>
-          <!-- Person list -->
-          <div id="prelimsPersonList" style="flex:1;overflow-y:auto;padding:8px 8px 40px"></div>
-        </div>
-
-        <!-- RIGHT: Allocation editor or profile chart -->
-        <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0">
-          <!-- Right panel toolbar -->
-          <div style="display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid var(--border);flex-shrink:0">
-            <span id="prelimsRightTitle" style="font-size:13px;font-weight:700;color:var(--t1);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Select a person to allocate</span>
-            <div class="vr-view-toggle">
-              <button class="vr-view-btn active" id="prv-allocate" onclick="switchPrelimsRightView('allocate',this)">✏️ Allocate</button>
-              <button class="vr-view-btn" id="prv-profile" onclick="switchPrelimsRightView('profile',this)">📊 Profile</button>
-              <button class="vr-view-btn" id="prv-org" onclick="switchPrelimsRightView('org',this)">👥 Org Chart</button>
-            </div>
-            <button class="btn sm" onclick="openPrelimSetupModal()" title="Setup">⚙️</button>
-            <button class="btn sm" id="prelimsPrintBtn" onclick="printOrgChart()" style="display:none">🖨️</button>
-          </div>
-          <!-- Right panel views -->
-          <div id="prelimsAllocView" style="flex:1;overflow:auto;display:flex;flex-direction:column"></div>
-          <div id="prelimsProfileView" style="flex:1;overflow:auto;display:none;flex-direction:column;padding:16px 20px"></div>
-          <div id="prelimsOrgView" style="flex:1;overflow:auto;display:none">
-            <div class="org-wrap">
-              <div class="org-editor" id="orgEditor"></div>
-              <div class="org-chart-area" id="orgChartArea"></div>
-            </div>
-          </div>
+      <!-- PRELIMS SUB-TABS -->
+      <div style="display:flex;align-items:center;margin-bottom:16px;gap:12px;">
+        <div class="vr-view-toggle">
+          <button class="vr-view-btn active" id="pstProgramme" onclick="switchPrelimsTab('programme',this)">📅 Programme</button>
+          <button class="vr-view-btn" id="pstAllocate" onclick="switchPrelimsTab('allocate',this)">👥 Allocate</button>
+          <button class="vr-view-btn" id="pstProfile" onclick="switchPrelimsTab('profile',this)">📊 Cost Profile</button>
+          <button class="vr-view-btn" id="pstOrg" onclick="switchPrelimsTab('org',this)">🏢 Org Chart</button>
         </div>
       </div>
 
-      <!-- Version bar -->
-      <div class="comp-rev-bar" id="prelimsRevBar" style="margin-top:8px">
-        <div class="comp-rev-bar-left">
-          <span class="comp-rev-badge" id="prelimsRevBadge">Rev 0</span>
-          <span class="comp-rev-meta" id="prelimsRevMeta">No versions saved yet</span>
-        </div>
-        <div class="comp-rev-actions">
-          <button class="btn xs" onclick="toggleCompRevHistory('prelims')">🕓 History</button>
-          <button class="btn xs primary" onclick="openCompRevForm('prelims')">+ Save Version</button>
-        </div>
-      </div>
-      <div class="comp-rev-history" id="prelimsRevHistory">
-        <div class="comp-rev-save-form" id="prelimsRevSaveForm">
-          <input id="prelimsRevNote" placeholder="Version note — e.g. Post scope change, VE exercise…">
-          <div class="comp-rev-save-form-btns">
-            <button class="btn xs" onclick="closeCompRevForm('prelims')">Cancel</button>
-            <button class="btn xs primary" onclick="confirmSaveCompRev('prelims')">Save Version</button>
+      <!-- PROGRAMME SUB-PANEL -->
+      <div id="pspProgramme" class="prelims-sub-panel active">
+        <div id="prelimsProgrammeBridgeStrip" class="tab-bridge-strip cols-3" style="display:none;margin-bottom:18px;"></div>
+        <div class="prog-outer" id="progPanelInner"></div>
+        <div class="comp-rev-bar" id="programmeRevBar" style="margin-top:8px">
+          <div class="comp-rev-bar-left">
+            <span class="comp-rev-badge" id="programmeRevBadge">Rev 0</span>
+            <span class="comp-rev-meta" id="programmeRevMeta">No versions saved yet</span>
+          </div>
+          <div class="comp-rev-actions">
+            <button class="btn xs" onclick="toggleCompRevHistory('programme')">🕓 History</button>
+            <button class="btn xs primary" onclick="openCompRevForm('programme')">+ Save Version</button>
           </div>
         </div>
-        <div class="comp-rev-history-head">
-          <span class="comp-rev-history-title">Version History</span>
+        <div class="comp-rev-history" id="programmeRevHistory">
+          <div class="comp-rev-save-form" id="programmeRevSaveForm">
+            <input id="programmeRevNote" placeholder="Version note — e.g. Revised after client programme change…">
+            <div style="display:flex;gap:8px;margin-top:6px;">
+              <input id="programmeRevMasterRef" style="font-family:var(--sans);font-size:12px;padding:6px 10px;border:1px solid var(--border2);border-radius:6px;background:var(--surface);color:var(--text);outline:none;flex:1;" placeholder="Master Prog. Ref — e.g. BBK-MP-2026-04">
+              <input id="programmeRevBaselineDate" type="date" style="font-family:var(--sans);font-size:12px;padding:6px 10px;border:1px solid var(--border2);border-radius:6px;background:var(--surface);color:var(--text);outline:none;" title="Baseline date">
+            </div>
+            <div class="comp-rev-save-form-btns">
+              <button class="btn xs" onclick="closeCompRevForm('programme')">Cancel</button>
+              <button class="btn xs primary" onclick="confirmSaveCompRev('programme')">Save Version</button>
+            </div>
+          </div>
+          <div class="comp-rev-history-head"><span class="comp-rev-history-title">Version History</span></div>
+          <div class="comp-rev-list" id="programmeRevList"></div>
         </div>
-        <div class="comp-rev-list" id="prelimsRevList"></div>
+      </div>
+
+      <!-- ALLOCATE SUB-PANEL -->
+      <div id="pspAllocate" class="prelims-sub-panel" style="display:none">
+        <div id="prelimsBridgeStrip" class="tab-bridge-strip cols-4" style="display:none;margin-bottom:16px;"></div>
+        <div id="prelimsTwoPanel" style="display:flex;gap:0;height:calc(100vh - 260px);min-height:480px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface)">
+          <!-- LEFT: Person list -->
+          <div id="prelimsLeftPanel" style="width:295px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--surface)">
+            <div style="display:flex;gap:6px;padding:8px 10px;border-bottom:1px solid var(--border);flex-shrink:0;align-items:center">
+              <input class="lib-search" id="prelimSearch" placeholder="Search…" oninput="filterPrelims()" style="flex:1;font-size:11px;height:28px">
+              <button class="btn primary sm" onclick="openResourcePickerWithTBC()">+ Person</button>
+            </div>
+            <div id="prelimsPersonList" style="flex:1;overflow-y:auto;padding:8px 8px 40px"></div>
+          </div>
+          <!-- RIGHT: Allocation editor -->
+          <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0">
+            <div style="display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid var(--border);flex-shrink:0">
+              <span id="prelimsRightTitle" style="font-size:13px;font-weight:700;color:var(--t1);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Select a person to allocate</span>
+              <button class="btn sm" onclick="openPrelimSetupModal()" title="Setup">⚙️</button>
+            </div>
+            <div id="prelimsAllocView" style="flex:1;overflow:auto;display:flex;flex-direction:column"></div>
+          </div>
+        </div>
+        <div class="comp-rev-bar" id="prelimsRevBar" style="margin-top:8px">
+          <div class="comp-rev-bar-left">
+            <span class="comp-rev-badge" id="prelimsRevBadge">Rev 0</span>
+            <span class="comp-rev-meta" id="prelimsRevMeta">No versions saved yet</span>
+          </div>
+          <div class="comp-rev-actions">
+            <button class="btn xs" onclick="toggleCompRevHistory('prelims')">🕓 History</button>
+            <button class="btn xs primary" onclick="openCompRevForm('prelims')">+ Save Version</button>
+          </div>
+        </div>
+        <div class="comp-rev-history" id="prelimsRevHistory">
+          <div class="comp-rev-save-form" id="prelimsRevSaveForm">
+            <input id="prelimsRevNote" placeholder="Version note — e.g. Post scope change, VE exercise…">
+            <div class="comp-rev-save-form-btns">
+              <button class="btn xs" onclick="closeCompRevForm('prelims')">Cancel</button>
+              <button class="btn xs primary" onclick="confirmSaveCompRev('prelims')">Save Version</button>
+            </div>
+          </div>
+          <div class="comp-rev-history-head"><span class="comp-rev-history-title">Version History</span></div>
+          <div class="comp-rev-list" id="prelimsRevList"></div>
+        </div>
+      </div>
+
+      <!-- COST PROFILE SUB-PANEL -->
+      <div id="pspProfile" class="prelims-sub-panel" style="display:none;min-height:600px;display:flex;flex-direction:column">
+        <div id="prelimsProfileView" style="flex:1;overflow:auto;display:flex;flex-direction:column;padding:0 0 16px;min-height:500px"></div>
+      </div>
+
+      <!-- ORG CHART SUB-PANEL -->
+      <div id="pspOrg" class="prelims-sub-panel" style="display:none">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
+          <button class="btn sm" id="prelimsPrintBtn" onclick="printOrgChart()">🖨️ Print</button>
+        </div>
+        <div id="orgEditorNew" style="margin-bottom:16px;"></div>
+        <div class="org-chart-area" id="orgChartArea"></div>
       </div>
 
     </div><!-- /phPanelPrelims -->
@@ -3619,39 +3649,6 @@ tr.pdf-tot td{color:white;font-weight:600;}
     </div>
 
     <!-- PROGRAMME TAB -->
-    <div class="proj-home-panel" id="phPanelProgramme">
-      <div id="programmeBridgeStrip" class="tab-bridge-strip cols-3" style="display:none;margin-bottom:18px;"></div>
-      <div class="prog-outer" id="progPanelInner"></div>
-      <!-- Version bar -->
-      <div class="comp-rev-bar" id="programmeRevBar" style="margin:14px 0 0">
-        <div class="comp-rev-bar-left">
-          <span class="comp-rev-badge" id="programmeRevBadge">Rev 0</span>
-          <span class="comp-rev-meta" id="programmeRevMeta">No versions saved yet</span>
-        </div>
-        <div class="comp-rev-actions">
-          <button class="btn xs" onclick="toggleCompRevHistory('programme')">🕓 History</button>
-          <button class="btn xs primary" onclick="openCompRevForm('programme')">+ Save Version</button>
-        </div>
-      </div>
-      <div class="comp-rev-history" id="programmeRevHistory">
-        <div class="comp-rev-save-form" id="programmeRevSaveForm">
-          <input id="programmeRevNote" placeholder="Version note — e.g. Revised after client programme change…">
-          <div style="display:flex;gap:8px;margin-top:6px;">
-            <input id="programmeRevMasterRef" style="font-family:var(--sans);font-size:12px;padding:6px 10px;border:1px solid var(--border2);border-radius:6px;background:var(--surface);color:var(--text);outline:none;flex:1;" placeholder="Master Prog. Ref — e.g. BBK-MP-2026-04">
-            <input id="programmeRevBaselineDate" type="date" style="font-family:var(--sans);font-size:12px;padding:6px 10px;border:1px solid var(--border2);border-radius:6px;background:var(--surface);color:var(--text);outline:none;" title="Baseline date">
-          </div>
-          <div class="comp-rev-save-form-btns">
-            <button class="btn xs" onclick="closeCompRevForm('programme')">Cancel</button>
-            <button class="btn xs primary" onclick="confirmSaveCompRev('programme')">Save Version</button>
-          </div>
-        </div>
-        <div class="comp-rev-history-head">
-          <span class="comp-rev-history-title">Version History</span>
-        </div>
-        <div class="comp-rev-list" id="programmeRevList"></div>
-      </div>
-    </div>
-
     <!-- ASSEMBLY TAB -->
     <div class="proj-home-panel" id="phPanelAssemble">
       <!-- -- Bridge strip (v10 design language) -- -->
@@ -5726,7 +5723,7 @@ function renderDash(){
       </div>`;
   }
 
-  const al=document.getElementById('activityList'); al.innerHTML='';
+  const al=document.getElementById('activityList'); if(!al) return; al.innerHTML='';
   for(const act of(p.activity||[]).slice(0,8)){
     const d=document.createElement('div'); d.className='activity-item';
     d.innerHTML=`<div class="act-icon" style="background:${act.bg}">${act.icon}</div><div class="act-body"><div class="act-text">${act.text}</div><div class="act-meta">${act.time} · ${act.user}</div></div>`;
@@ -8045,10 +8042,10 @@ function confirmProjectModal(){
         const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         const fmtM = (m,y) => `${monthNames[m]} ${y}`;
         return [
-          {id:'ph-'+uid(), name:'Design',         startMonth:_ps,    startYear:_py,       endMonth:_mob.m-1<0?11:_mob.m-1, endYear:_mob.m===0?_mob.y-1:_mob.y,  colour:'#6366f1', milestones:[], expanded:true},
-          {id:'ph-'+uid(), name:'Mobilisation',   startMonth:_mob.m, startYear:_mob.y,    endMonth:_con.m-1<0?11:_con.m-1, endYear:_con.m===0?_con.y-1:_con.y,  colour:'#f59e0b', milestones:[], expanded:true},
-          {id:'ph-'+uid(), name:'Construction',   startMonth:_con.m, startYear:_con.y,    endMonth:_com.m-1<0?11:_com.m-1, endYear:_com.m===0?_com.y-1:_com.y,  colour:'#10b981', milestones:[], expanded:true},
-          {id:'ph-'+uid(), name:'Commissioning',  startMonth:_com.m, startYear:_com.y,    endMonth:_end.m-1<0?11:_end.m-1, endYear:_end.m===0?_end.y-1:_end.y,  colour:'#3b82f6', milestones:[], expanded:true},
+          {id:'ph-'+uid(), label:'Design',         startMonth:_ps,    startYear:_py,       endMonth:_mob.m-1<0?11:_mob.m-1, endYear:_mob.m===0?_mob.y-1:_mob.y,  colour:'#6366f1', milestones:[], expanded:true},
+          {id:'ph-'+uid(), label:'Mobilisation',   startMonth:_mob.m, startYear:_mob.y,    endMonth:_con.m-1<0?11:_con.m-1, endYear:_con.m===0?_con.y-1:_con.y,  colour:'#f59e0b', milestones:[], expanded:true},
+          {id:'ph-'+uid(), label:'Construction',   startMonth:_con.m, startYear:_con.y,    endMonth:_com.m-1<0?11:_com.m-1, endYear:_com.m===0?_com.y-1:_com.y,  colour:'#10b981', milestones:[], expanded:true},
+          {id:'ph-'+uid(), label:'Commissioning',  startMonth:_com.m, startYear:_com.y,    endMonth:_end.m-1<0?11:_end.m-1, endYear:_end.m===0?_end.y-1:_end.y,  colour:'#3b82f6', milestones:[], expanded:true},
         ];
       })(),
       riskRegister: [],
@@ -9582,6 +9579,25 @@ document.getElementById('vpickSearch').addEventListener('keydown',e=>{if(e.key==
 // -------------------------------------------
 // PROJECT HOME TAB SWITCHING
 // -------------------------------------------
+function switchPrelimsTab(tab, el) {
+  document.querySelectorAll('[id^="pst"]').forEach(b=>{b.classList.remove('active');});
+  if(el) el.classList.add('active');
+  document.getElementById('pspProgramme').style.display = tab==='programme' ? '' : 'none';
+  document.getElementById('pspAllocate').style.display  = tab==='allocate'  ? '' : 'none';
+  document.getElementById('pspProfile').style.display   = tab==='profile'   ? '' : 'none';
+  document.getElementById('pspOrg').style.display       = tab==='org'       ? '' : 'none';
+  // Toggle active class on sub panels
+  ['pspProgramme','pspAllocate','pspProfile','pspOrg'].forEach(id=>{
+    const el2 = document.getElementById(id); if(el2) el2.classList.remove('active');
+  });
+  const activeId = {programme:'pspProgramme',allocate:'pspAllocate',profile:'pspProfile',org:'pspOrg'}[tab];
+  if(activeId) document.getElementById(activeId)?.classList.add('active');
+  if(tab==='programme') renderProgramme();
+  if(tab==='allocate') renderPrelims();
+  if(tab==='profile') renderPrelimsProfile();
+  if(tab==='org') renderOrgChart();
+}
+
 function switchProjHomeTab(tab, el) {
   document.querySelectorAll('.proj-home-tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.proj-home-panel').forEach(p=>p.classList.remove('active'));
@@ -9589,16 +9605,15 @@ function switchProjHomeTab(tab, el) {
   const panelMap = {
     packages:'phPanelPackages', prelims:'phPanelPrelims',
     risk:'phPanelRisk', ohp:'phPanelOhp',
-    programme:'phPanelProgramme', assemble:'phPanelAssemble',
+    assemble:'phPanelAssemble',
     history:'phPanelHistory', submit:'phPanelSubmit', mip:'phPanelMip',
     log:'phPanelLog'
   };
   const panel = document.getElementById(panelMap[tab]);
   if(panel) panel.classList.add('active');
-  if(tab==='prelims') renderPrelims();
+  if(tab==='prelims') { switchPrelimsTab('programme', document.getElementById('pstProgramme')); }
   if(tab==='risk') renderRisk();
   if(tab==='ohp') renderOhp();
-  if(tab==='programme') renderProgramme();
   if(tab==='assemble') renderAssemble();
   if(tab==='history') renderHistory();
   if(tab==='submit') renderSubmit();
@@ -10722,18 +10737,10 @@ let _prelimsSelectedPid = null;
 
 function switchPrelimsRightView(view, el) {
   _prelimsRightView = view;
-  document.querySelectorAll('[id^="prv-"]').forEach(b=>b.classList.remove('active'));
-  if(el) el.classList.add('active');
-  document.getElementById('prelimsAllocView').style.display  = view==='allocate' ? 'flex' : 'none';
-  document.getElementById('prelimsProfileView').style.display = view==='profile'  ? 'flex' : 'none';
-  document.getElementById('prelimsOrgView').style.display     = view==='org'      ? 'block': 'none';
-  // Hide left panel on profile and org chart — only relevant for allocate
+  // This function now only manages the allocate editor internally
+  document.getElementById('prelimsAllocView').style.display = 'flex';
   const leftPanel = document.getElementById('prelimsLeftPanel');
-  if(leftPanel) leftPanel.style.display = view==='allocate' ? 'flex' : 'none';
-  const printBtn = document.getElementById('prelimsPrintBtn');
-  if(printBtn) printBtn.style.display = view==='org' ? '' : 'none';
-  if(view==='profile') renderPrelimsProfile();
-  if(view==='org') renderOrgChart();
+  if(leftPanel) leftPanel.style.display = 'flex';
   if(view==='allocate' && _prelimsSelectedPid) renderPrelimsAllocEditor(_prelimsSelectedPid);
 }
 
@@ -10924,14 +10931,9 @@ function renderPrelimsPersonList() {
 function selectPrelimsPersonCard(pid) {
   _prelimsSelectedPid = pid;
   _prelimsRightView = 'allocate';
-  document.querySelectorAll('[id^="prv-"]').forEach(b=>b.classList.remove('active'));
-  const ab = document.getElementById('prv-allocate');
-  if(ab) ab.classList.add('active');
-  document.getElementById('prelimsAllocView').style.display  = 'flex';
-  document.getElementById('prelimsProfileView').style.display = 'none';
-  document.getElementById('prelimsOrgView').style.display     = 'none';
+  document.getElementById('prelimsAllocView').style.display = 'flex';
   renderPrelimsAllocEditor(pid);
-  renderPrelimsPersonList(); // re-render to update selected highlight
+  renderPrelimsPersonList();
 }
 
 function renderPrelimsAllocEditor(pid) {
@@ -11075,7 +11077,8 @@ function renderPrelimsProfile() {
   const totalOverhead = currentProject.prelims.filter(p=>p.treatment==='Overhead').reduce((s,p)=>s+getPersonTotals(p,c).total,0);
   const totalTravel = currentProject.prelims.filter(p=>p.treatment==='Costed').reduce((s,p)=>s+getPersonTotals(p,c).travel,0);
 
-  const MONTH_S = ['J','F','M','A','M','J','J','A','S','O','N','D'];
+  const MONTH_S = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const MONTH_S1 = ['J','F','M','A','M','J','J','A','S','O','N','D'];
 
   view.innerHTML = `
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;flex-shrink:0">
@@ -11086,19 +11089,25 @@ function renderPrelimsProfile() {
         {l:'Peak Month',v:fmt(maxCost),col:'var(--t1)'}
       ].map(k=>`<div style="background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:10px 12px"><div style="font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);margin-bottom:4px">${k.l}</div><div style="font-size:16px;font-weight:800;font-family:var(--mono);color:${k.col}">${k.v}</div></div>`).join('')}
     </div>
-    <div style="flex:1;min-height:0;display:flex;flex-direction:column">
-      <div style="flex:1;display:flex;align-items:flex-end;gap:2px;position:relative;padding-bottom:24px;min-height:160px">
-        ${months.map(m=>{
-          const h = maxCost>0?(m.cost/maxCost*100):0;
-          return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0" title="${MONTH_S[m.mo]} ${m.yr}: ${fmt(m.cost)}">
-            <div style="width:100%;background:${m.phase.colour};border-radius:2px 2px 0 0;opacity:.82;height:${h}%;min-height:${m.cost>0?2:0}px;transition:height .3s;position:relative;bottom:0"></div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 16px 12px;flex-shrink:0">
+      <div style="display:flex;align-items:flex-end;gap:2px;height:180px">
+        ${months.map((m,i)=>{
+          const BAR_MAX_H = 160;
+          const hPx = maxCost>0 ? Math.max(m.cost>0?2:0, Math.round(m.cost/maxCost*BAR_MAX_H)) : 0;
+          const isYearStart = m.mo===0;
+          return `<div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;position:relative" title="${MONTH_S[m.mo]} ${m.yr}: ${fmt(m.cost)}">
+            ${isYearStart?`<div style="position:absolute;top:0;left:0;width:1px;height:100%;background:var(--border2);opacity:.5"></div>`:''}
+            <div style="width:100%;background:${m.phase.colour};border-radius:2px 2px 0 0;opacity:.85;height:${hPx}px;transition:height .3s"></div>
           </div>`;
         }).join('')}
       </div>
-      <div style="display:flex;gap:2px;margin-top:-20px">
-        ${months.map(m=>`<div style="flex:1;text-align:center;font-size:8px;color:var(--t3);border-top:2px solid ${m.phase.colour};padding-top:3px">${MONTH_S[m.mo]}</div>`).join('')}
+      <div style="display:flex;gap:2px;margin-top:4px">
+        ${months.map((m,i)=>{
+          const showLabel = m.mo===0 || m.mo===3 || m.mo===6 || m.mo===9 || i===0;
+          return `<div style="flex:1;text-align:center;font-size:8.5px;font-weight:${showLabel?'700':'400'};color:${showLabel?'var(--t2)':'var(--t3)'};border-top:2px solid ${m.phase.colour};padding-top:3px;overflow:hidden;white-space:nowrap">${showLabel?(m.mo===0?MONTH_S[m.mo]+' '+m.yr:MONTH_S[m.mo]):MONTH_S1[m.mo]}</div>`;
+        }).join('')}
       </div>
-      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:12px">
+      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:10px">
         ${phases.map(ph=>`<div style="display:flex;align-items:center;gap:5px"><div style="width:8px;height:8px;border-radius:2px;background:${ph.colour}"></div><span style="font-size:11px;color:var(--t2)">${ph.label}</span></div>`).join('')}
       </div>
     </div>`;
@@ -11108,12 +11117,9 @@ function renderPrelimsProfile() {
 function renderPrelims() {
   if(!currentProject) return;
   ensurePrelims();
-  // Migrate legacy spread data to phaseAlloc
   migrateLegacyPrelimsSpread();
   renderPrelimsPersonList();
-  if(_prelimsRightView==='allocate' && _prelimsSelectedPid) renderPrelimsAllocEditor(_prelimsSelectedPid);
-  else if(_prelimsRightView==='profile') renderPrelimsProfile();
-  else if(_prelimsRightView==='org') renderOrgChart();
+  if(_prelimsSelectedPid) renderPrelimsAllocEditor(_prelimsSelectedPid);
 }
 
 // Migrate old monthly spread to phase-based alloc (best effort)
@@ -11143,10 +11149,6 @@ function migrateLegacyPrelimsSpread() {
 }
 
 // ─── LEGACY COMPAT ────────────────────────────────────────────────────────────
-function switchPrelimsTab(tab, el) {
-  if(tab==='org') switchPrelimsRightView('org', document.getElementById('prv-org'));
-  else switchPrelimsRightView('allocate', document.getElementById('prv-allocate'));
-}
 
 function updatePrelimRunRate(phaseId) { /* covered by profile view now */ }
 
@@ -11256,102 +11258,77 @@ function ensureOrgData(){
 
 function renderOrgChart(){
   if(!currentProject) return;
-  ensureOrgData();
-  renderOrgEditor();
+  renderOrgEditorNew();
   renderOrgSVG();
 }
 
-// -- Editor panel (left) ----------------------------------
-let _odId=null, _odBucket=null;
+function renderOrgEditorNew(){
+  const el=document.getElementById('orgEditorNew'); if(!el) return;
+  const all=(currentProject.prelims||[]).filter(p=>p.treatment!=='Shared');
+  if(!all.length){ el.innerHTML='<div style="padding:16px;color:var(--t3);font-size:12px">No people added yet. Go to Allocate to add people.</div>'; return; }
 
-function renderOrgEditor(){
-  const el=document.getElementById('orgEditor'); if(!el) return;
-  const all=currentProject.prelims||[];
-  const hier=all.filter(p=>p.treatment!=='Shared');
-  const shared=all.filter(p=>p.treatment==='Shared');
-  const leadId=currentProject.orgLeadId||null;
-  const lead=leadId ? all.find(p=>p.id===leadId) : null;
+  // Determine current lead = only person with no reportsTo
+  // If multiple have no reportsTo, the first one wins; rest are warned
+  const noManager = all.filter(p=>!p.reportsTo);
+  const lead = noManager[0]||null;
+  const hasMultiLead = noManager.length > 1;
 
-  let html='<div class="org-editor-inner">';
+  const BUCKET_COLORS={'Operations':'#2563EB','Technical':'#059669','Commercial':'#D97706','Support':'#7C3AED'};
 
-  // Project Lead drop zone
+  let html='';
+  // Lead callout
   if(lead){
-    html+=`<div class="org-lead-zone org-lead-zone--filled"
-      ondragover="orgLeadZoneDragOver(event)"
-      ondrop="orgLeadZoneDrop(event)"
-      ondragleave="orgLeadZoneDragLeave(event)">
-      <div style="display:flex;align-items:center;gap:8px;width:100%">
-        <div style="flex:1;min-width:0">
-          <div style="font-size:11.5px;font-weight:700;color:#1B4FD8">${escHtml(lead.name)}</div>
-          <div style="font-size:10px;color:var(--t3)">${escHtml(lead.role||'\u2014')}</div>
-        </div>
-        <span style="font-size:8px;font-weight:700;padding:2px 6px;border-radius:3px;background:#EEF2FD;color:#1B4FD8;white-space:nowrap"></span>
-        <button onclick="clearOrgLead()" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:13px;line-height:1;padding:0 2px" title="Remove lead">\u2715</button>
+    const bc=BUCKET_COLORS[lead.bucket]||'#64748B';
+    html+=`<div style="display:flex;align-items:center;gap:10px;background:#EEF2FD;border:1.5px solid #C7D7F9;border-radius:8px;padding:10px 14px;margin-bottom:14px">
+      <div style="width:32px;height:32px;border-radius:50%;background:#1B4FD8;display:flex;align-items:center;justify-content:center;color:white;font-size:13px;font-weight:700;flex-shrink:0">★</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;font-weight:700;color:#1B4FD8">${escHtml(lead.name)} <span style="font-size:9px;font-weight:700;background:#1B4FD8;color:white;border-radius:3px;padding:1px 5px;letter-spacing:.04em">PROJECT LEAD</span></div>
+        <div style="font-size:10px;color:#4B6CB7;margin-top:1px">${escHtml(lead.role||'—')} · ${escHtml(lead.bucket||'—')}</div>
+        <div style="font-size:10px;color:#4B6CB7;margin-top:2px">No one reports above this person — they are the project lead.</div>
       </div>
-    </div>`;
-  } else {
-    html+=`<div class="org-lead-zone org-lead-zone--empty"
-      ondragover="orgLeadZoneDragOver(event)"
-      ondrop="orgLeadZoneDrop(event)"
-      ondragleave="orgLeadZoneDragLeave(event)">
-      <div style="font-size:10px;font-weight:600;color:var(--t3);text-align:center;line-height:1.6">
-        \u2191 Drag a person here<br>to set Project Lead
-      </div>
+      ${hasMultiLead?`<div style="font-size:10px;color:#dc2626;font-weight:600">⚠️ Multiple people have no manager set</div>`:''}
     </div>`;
   }
 
-  html+='<div class="org-editor-title" style="margin-top:12px">Drag to reorder \u00b7 \u2190 \u2192 to set level</div>';
-
-  BUCKET_ORDER_ORG.filter(b=>b!=='Project Lead').forEach(bucket=>{
-    const people=hier.filter(p=>p.bucket===bucket).sort((a,b)=>(a.orgOrder||0)-(b.orgOrder||0));
-    if(!people.length) return;
-    const bc=BUCKET_COLORS_ORG[bucket]||{bg:'var(--s3)',text:'var(--t2)',node:'var(--t2)'};
-    html+=`<div class="org-bucket-section">
-      <div class="org-bucket-header" style="border-left:3px solid ${bc.node};background:${bc.bg};color:${bc.text}">${bucket}</div>`;
-    people.forEach((p,i)=>{
-      const lv=p.orgLevel||0;
-      const isLead=p.id===leadId;
-      const indent=lv*22;
-      const prefix=lv>0?`<span style="color:var(--border2);font-size:11px;flex-shrink:0;margin-right:2px">\u2514</span>`:'';
-      const pips=[0,1,2].map(j=>`<div class="org-level-pip${j<lv?' active':''}"></div>`).join('');
-      html+=`<div style="padding-left:${indent}px">
-        <div class="org-person-card${isLead?' org-person-card--lead':''}"
-          data-id="${p.id}" data-bucket="${bucket}" data-treatment="${p.treatment||'Costed'}"
-          draggable="true"
-          ondragstart="orgDS(event,'${p.id}','${bucket}')"
-          ondragover="orgDO(event,'${p.id}','${bucket}')"
-          ondragend="orgDE()"
-          ondrop="orgDrop(event,'${p.id}','${bucket}')">
-          <span class="org-drag-handle">\u28bf</span>
-          ${prefix}
-          <div class="org-indent-controls">
-            <button class="org-indent-btn" onclick="orgIndent('${p.id}',-1)" ${lv<=0?'disabled':''}>\u2190</button>
-            <button class="org-indent-btn" onclick="orgIndent('${p.id}',1)"  ${lv>=2?'disabled':''}>\u2192</button>
-          </div>
-          <div class="org-level-pips">${pips}</div>
-          <div class="org-person-info">
-            <div class="org-person-name">${escHtml(p.name)}${isLead?' <span style="font-size:8px;font-weight:700;padding:1px 4px;border-radius:2px;background:#EEF2FD;color:#1B4FD8">LEAD</span>':''}</div>
-            <div class="org-person-role">${escHtml(p.role||'\u2014')}${p.treatment==='Overhead'?' <span style="color:var(--t3);font-size:9px">(OH)</span>':''}</div>
-          </div>
+  html+='<div style="display:flex;flex-wrap:wrap;gap:8px;padding:0 0 16px">';
+  all.forEach(p=>{
+    const isLead = lead && p.id===lead.id;
+    const reportsTo = p.reportsTo || '';
+    // Lead can't report to anyone; others can report to anyone except themselves
+    const bc = BUCKET_COLORS[p.bucket]||'#64748B';
+    if(isLead){
+      html+=`<div style="background:var(--s2);border:1.5px dashed #C7D7F9;border-radius:8px;padding:10px 12px;min-width:200px;flex:1;max-width:280px;opacity:.7">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+          <div style="width:8px;height:8px;border-radius:50%;background:#1B4FD8;flex-shrink:0"></div>
+          <div style="font-size:12px;font-weight:700;color:#1B4FD8">${escHtml(p.name)}</div>
         </div>
+        <div style="font-size:10px;color:var(--t3);margin-bottom:6px">${escHtml(p.role||'—')}</div>
+        <div style="font-size:10px;color:#4B6CB7;font-style:italic">★ Project Lead — top of hierarchy</div>
       </div>`;
-    });
-    html+='</div>';
+    } else {
+      // Build options: exclude self; mark current lead clearly
+      const others = all.filter(x=>x.id!==p.id);
+      const opts = `<option value="">— No manager (makes this person a Lead)</option>`+
+        others.map(o=>`<option value="${o.id}"${reportsTo===o.id?' selected':''}>${escHtml(o.name)}${lead&&o.id===lead.id?' ★':''}</option>`).join('');
+      html+=`<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px;min-width:200px;flex:1;max-width:280px">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+          <div style="width:8px;height:8px;border-radius:50%;background:${bc};flex-shrink:0"></div>
+          <div style="font-size:12px;font-weight:700;color:var(--text)">${escHtml(p.name)}</div>
+        </div>
+        <div style="font-size:10px;color:var(--t3);margin-bottom:8px">${escHtml(p.role||'—')} · ${escHtml(p.bucket||'')}</div>
+        <div style="font-size:10px;font-weight:600;color:var(--t2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em">Reports to</div>
+        <select onchange="setOrgReportsTo('${p.id}',this.value)" style="font-family:var(--sans);font-size:11px;width:100%;padding:5px 8px;border:1px solid var(--border2);border-radius:5px;background:var(--bg);color:var(--text);outline:none">${opts}</select>
+      </div>`;
+    }
   });
-
   html+='</div>';
-
-  if(shared.length){
-    html+=`<div style="border-top:1px solid var(--border);padding:12px 16px;background:var(--bg);">
-      <div class="org-editor-title" style="margin-bottom:8px">Shared Resources</div>
-      ${shared.map(p=>`<div style="padding:4px 8px;font-size:11px;color:var(--t2);display:flex;align-items:center;gap:6px;">
-        <span style="font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:3px;background:#E0F2FE;color:#0891B2;flex-shrink:0">SHARED</span>
-        <span style="font-weight:600">${escHtml(p.name)}</span>
-        <span style="font-size:10px;color:var(--t3)">${escHtml(p.role||'')}</span>
-      </div>`).join('')}
-    </div>`;
-  }
   el.innerHTML=html;
+}
+
+function setOrgReportsTo(personId, managerId){
+  const p=(currentProject.prelims||[]).find(x=>x.id===personId); if(!p) return;
+  if(managerId) p.reportsTo=managerId; else delete p.reportsTo;
+  scheduleSave(); renderOrgChart();
 }
 
 function orgLeadZoneDragOver(e){ e.preventDefault(); e.currentTarget.classList.add('org-lead-zone--hover'); }
@@ -11390,56 +11367,73 @@ function orgDrop(e,targetId,bucket){
 // -- SVG chart ---------------------------------------------
 function renderOrgSVG(){
   const area=document.getElementById('orgChartArea'); if(!area) return;
+  if(!currentProject) return;
   const all=currentProject.prelims||[];
   const shared=all.filter(p=>p.treatment==='Shared');
   const hier=all.filter(p=>p.treatment!=='Shared');
 
   if(!hier.length&&!shared.length){
-    area.innerHTML='<div class="org-empty">No team members yet — add people in the Schedule tab first.</div>';
+    area.innerHTML='<div style="padding:40px;text-align:center;color:var(--t3);font-size:12px">No team members yet — add people in Allocate first.</div>';
     return;
   }
 
-  // -- Layout constants -----------------------------------
-  const NW=180, NH=64, HGAP=28, VGAP=18, PAD=40;
-  const HEAD_H=36, SPINE_GAP=44;
-  const INDENT=20; // x-indent per level within a column
+  // ── Lead: the unique person with no reportsTo ──────────────────────────────
+  const lead = hier.find(p=>!p.reportsTo) || hier[0] || null;
+  const leadId = lead ? lead.id : null;
+  if(lead) currentProject.orgLeadId = leadId;
 
-  // -- Project Lead ---------------------------------------
-  const leads=hier.filter(p=>p.id===(currentProject.orgLeadId||null));
-  const lead=leads[0]||null;
+  // ── Non-lead people only go into columns ──────────────────────────────────
+  const team = hier.filter(p=>p.id !== leadId);
 
-  // -- Columns (all buckets that have non-lead people) ----
-  const cols=BUCKET_ORDER_ORG.filter(b=>b!=='Project Lead'&&hier.some(p=>p.bucket===b));
+  // ── Build reportsTo tree ───────────────────────────────────────────────────
+  // For SVG: bucket columns contain only non-lead team members.
+  // Within each bucket, build a simple 2-level tree:
+  //   - direct reports to lead → level 0
+  //   - reports to someone in same bucket who is level 0 → level 1
+  //   - everyone else → level 0 (fallback)
+
+  const NW=190, NH=60, HGAP=32, VGAP=14, PAD=40;
+  const HEAD_H=34, SPINE_GAP=48, INDENT=24;
+
+  const cols=BUCKET_ORDER_ORG.filter(b=>b!=='Project Lead'&&team.some(p=>p.bucket===b));
   const numCols=cols.length||1;
-
-  // -- Total SVG width — centre everything ---------------
   const colsWidth=numCols*(NW+HGAP)-HGAP;
-  const svgW=colsWidth+PAD*2;
+  const svgW=Math.max(colsWidth+PAD*2, 400);
 
-  // Column centre x values
   const colCX={};
   cols.forEach((b,i)=>{ colCX[b]=PAD + i*(NW+HGAP) + NW/2; });
 
-  // -- Lead node — centred -------------------------------
   const leadX=svgW/2-NW/2;
   const leadY=PAD;
   const leadBotY=leadY+NH;
+  const spineY=leadBotY+SPINE_GAP*0.45;
+  const headY=leadBotY+SPINE_GAP;
+  const firstRowY=headY+HEAD_H+VGAP;
 
-  // -- Y positions ---------------------------------------
-  const spineY=leadBotY+SPINE_GAP*0.5;    // horizontal spine y
-  const headY=leadBotY+SPINE_GAP;          // bucket header tops
-  const firstRowY=headY+HEAD_H+VGAP;       // first person row top
-
-  // -- Build person nodes per column ---------------------
+  // Build per-column node layout
   const bucketNodes={};
   let maxBotY=firstRowY;
   cols.forEach(b=>{
-    const people=hier.filter(p=>p.bucket===b).sort((a,c)=>(a.orgOrder||0)-(c.orgOrder||0));
+    const people=team.filter(p=>p.bucket===b);
+
+    // Sort: direct reports to lead first, then by name
+    people.sort((a,c)=>{
+      const aLead=(!a.reportsTo||a.reportsTo===leadId)?0:1;
+      const cLead=(!c.reportsTo||c.reportsTo===leadId)?0:1;
+      if(aLead!==cLead) return aLead-cLead;
+      return (a.name||'').localeCompare(c.name||'');
+    });
+
     const colLeft=colCX[b]-NW/2;
     let y=firstRowY;
     bucketNodes[b]=[];
     people.forEach(p=>{
-      const lv=p.orgLevel||0;
+      // Level: 0 = direct report to lead (or no manager set), 1 = reports to someone in same bucket
+      let lv=0;
+      if(p.reportsTo && p.reportsTo!==leadId){
+        const mgr=team.find(x=>x.id===p.reportsTo);
+        if(mgr && mgr.bucket===b) lv=1;
+      }
       const xOff=lv*INDENT;
       const w=NW-xOff;
       bucketNodes[b].push({p,x:colLeft+xOff,y,w,h:NH,lv,b});
@@ -11449,14 +11443,13 @@ function renderOrgSVG(){
   });
   const svgH=maxBotY+PAD;
 
-  // -- SVG -----------------------------------------------
-  let s=`<svg width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" style="display:block;font-family:'DM Sans',sans-serif">
+  let s=`<svg width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" style="display:block;font-family:'DM Sans',sans-serif;max-width:100%">
   <defs>
     <filter id="os2" x="-10%" y="-10%" width="120%" height="140%">
       <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#00000014"/>
     </filter>
-    <filter id="os3" x="-10%" y="-10%" width="120%" height="140%">
-      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#1B4FD820"/>
+    <filter id="os3" x="-10%" y="-10%" width="120%" height="150%">
+      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#1B4FD825"/>
     </filter>
     <linearGradient id="leadGrad" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#1B4FD8"/>
@@ -11464,99 +11457,93 @@ function renderOrgSVG(){
     </linearGradient>
   </defs>`;
 
-  // -- Spine: lead → columns -----------------------------
-  if(lead&&cols.length){
-    const lbx=svgW/2; // lead bottom centre x
-    // Drop from lead to spine
-    s+=`<line x1="${lbx}" y1="${leadBotY}" x2="${lbx}" y2="${spineY}" stroke="#D4D0CA" stroke-width="1.5"/>`;
-    // Horizontal spine
+  // Spine from lead to columns
+  if(lead && cols.length){
+    const lbx=svgW/2;
+    s+=`<line x1="${lbx}" y1="${leadBotY}" x2="${lbx}" y2="${spineY}" stroke="#CBD5E1" stroke-width="1.5"/>`;
     if(cols.length>1){
       const lx=Math.min(...cols.map(b=>colCX[b]));
       const rx=Math.max(...cols.map(b=>colCX[b]));
-      s+=`<line x1="${lx}" y1="${spineY}" x2="${rx}" y2="${spineY}" stroke="#D4D0CA" stroke-width="1.5"/>`;
+      s+=`<line x1="${lx}" y1="${spineY}" x2="${rx}" y2="${spineY}" stroke="#CBD5E1" stroke-width="1.5"/>`;
     }
-    // Drop from spine to each bucket header
     cols.forEach(b=>{
-      s+=`<line x1="${colCX[b]}" y1="${spineY}" x2="${colCX[b]}" y2="${headY}" stroke="#D4D0CA" stroke-width="1.5"/>`;
+      s+=`<line x1="${colCX[b]}" y1="${spineY}" x2="${colCX[b]}" y2="${headY}" stroke="#CBD5E1" stroke-width="1.5"/>`;
     });
   }
 
-  // -- Bucket headers -------------------------------------
+  // Bucket headers
   cols.forEach(b=>{
-    const bc=BUCKET_COLORS_ORG[b]||{bg:'#F0EEE9',text:'#555',node:'#555'};
+    const bc=BUCKET_COLORS_ORG[b]||{bg:'#F0F0F0',text:'#555',node:'#555'};
     const hx=colCX[b]-NW/2;
     s+=`<rect x="${hx}" y="${headY}" width="${NW}" height="${HEAD_H}" rx="6" fill="${bc.bg}"/>`;
-    s+=`<text x="${colCX[b]}" y="${headY+HEAD_H*0.68}" text-anchor="middle" font-size="9.5" font-weight="700" letter-spacing="1.2" fill="${bc.text}">${b.toUpperCase()}</text>`;
-    // Drop from header to first person
+    s+=`<text x="${colCX[b]}" y="${headY+HEAD_H*0.67}" text-anchor="middle" font-size="9" font-weight="700" letter-spacing="1.2" fill="${bc.text}">${b.toUpperCase()}</text>`;
     const first=(bucketNodes[b]||[])[0];
     if(first){
-      s+=`<line x1="${colCX[b]}" y1="${headY+HEAD_H}" x2="${first.x+first.w/2}" y2="${first.y}" stroke="#D4D0CA" stroke-width="1.5"/>`;
+      s+=`<line x1="${colCX[b]}" y1="${headY+HEAD_H}" x2="${first.x+first.w/2}" y2="${first.y}" stroke="#CBD5E1" stroke-width="1.5"/>`;
     }
   });
 
-  // -- Connectors between people within each column -------
+  // Connectors within columns
   cols.forEach(b=>{
     const cn=bucketNodes[b]||[];
     cn.forEach((node,i)=>{
-      if(i===0) return; // first already connected to header above
+      if(i===0) return;
+      const oh=node.p.treatment==='Overhead';
       if(node.lv>0){
-        // Child: elbow from parent bottom → across → into child left edge
-        const parent=[...cn].slice(0,i).reverse().find(n=>n.lv===node.lv-1);
+        // Find parent (nearest lv=0 above with matching reportsTo id, or just first lv=0)
+        const parent=[...cn].slice(0,i).reverse().find(n=>n.p.id===node.p.reportsTo)||[...cn].slice(0,i).reverse().find(n=>n.lv===0);
         if(parent){
           const px=parent.x+parent.w/2, py=parent.y+parent.h;
           const cy=node.y+node.h/2, nx=node.x;
-          const oh=node.p.treatment==='Overhead';
-          s+=`<line x1="${px}" y1="${py}" x2="${px}" y2="${cy}" stroke="#D4D0CA" stroke-width="1.5"${oh?' stroke-dasharray="4 3"':''}/>`;
-          s+=`<line x1="${px}" y1="${cy}" x2="${nx}" y2="${cy}" stroke="#D4D0CA" stroke-width="1.5"${oh?' stroke-dasharray="4 3"':''}/>`;
-          s+=`<circle cx="${nx}" cy="${cy}" r="2.5" fill="#D4D0CA"/>`;
+          s+=`<line x1="${px}" y1="${py}" x2="${px}" y2="${cy}" stroke="#CBD5E1" stroke-width="1.5"${oh?' stroke-dasharray="4 3"':''}/>`;
+          s+=`<line x1="${px}" y1="${cy}" x2="${nx}" y2="${cy}" stroke="#CBD5E1" stroke-width="1.5"${oh?' stroke-dasharray="4 3"':''}/>`;
+          s+=`<circle cx="${nx}" cy="${cy}" r="2.5" fill="#CBD5E1"/>`;
         }
       } else {
-        // Sibling at level 0 — straight drop from previous lv0
         const prev=[...cn].slice(0,i).reverse().find(n=>n.lv===0);
         if(prev){
           const px=prev.x+prev.w/2, py=prev.y+prev.h;
           const nx=node.x+node.w/2, ny=node.y;
-          const mid=py+(ny-py)*0.45;
-          s+=`<line x1="${px}" y1="${py}" x2="${px}" y2="${mid}" stroke="#D4D0CA" stroke-width="1.5"/>`;
-          s+=`<line x1="${px}" y1="${mid}" x2="${nx}" y2="${mid}" stroke="#D4D0CA" stroke-width="1.5"/>`;
-          s+=`<line x1="${nx}" y1="${mid}" x2="${nx}" y2="${ny}" stroke="#D4D0CA" stroke-width="1.5"/>`;
+          const mid=py+(ny-py)*0.5;
+          s+=`<line x1="${px}" y1="${py}" x2="${px}" y2="${mid}" stroke="#CBD5E1" stroke-width="1.5"/>`;
+          s+=`<line x1="${px}" y1="${mid}" x2="${nx}" y2="${mid}" stroke="#CBD5E1" stroke-width="1.5"/>`;
+          s+=`<line x1="${nx}" y1="${mid}" x2="${nx}" y2="${ny}" stroke="#CBD5E1" stroke-width="1.5"/>`;
         }
       }
     });
   });
 
-  // -- Helper: draw a node box with text wrapping ---------
+  // nodeBox helper
   function nodeBox(x,y,w,h,name,role,stroke,fill,isLead,oh,accentColor){
     const sdash=oh?'stroke-dasharray="4 3"':'';
     const sw=isLead?2.5:oh?1:1.5;
-    s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="7" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" ${sdash} filter="${isLead ? 'url(#os3)' : 'url(#os2)'}"/>`;
-    // Accent bar (left edge, not for overhead)
-    if(!oh&&!isLead) s+=`<rect x="${x}" y="${y+10}" width="3" height="${h-20}" rx="1.5" fill="${accentColor}" opacity="0.85"/>`;
-    // Name — centred, wrapping at ~18 chars
+    s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="7" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" ${sdash} filter="${isLead?'url(#os3)':'url(#os2)'}"/>`;
+    if(!oh&&!isLead) s+=`<rect x="${x}" y="${y+8}" width="3" height="${h-16}" rx="1.5" fill="${accentColor}" opacity="0.85"/>`;
     const cx=x+w/2;
-    const nameLines=wrapText(name,isLead?18:16);
+    const nameLines=wrapText(name,isLead?20:17);
     const totalTextH=nameLines.length*14+(role?12:0);
     let ty=y+(h-totalTextH)/2+13;
     nameLines.forEach(line=>{
-      s+=`<text x="${cx}" y="${ty}" text-anchor="middle" font-size="${isLead?13:11.5}" font-weight="700" fill="${isLead?'white':'#1A1A1A'}">${escHtml(line)}</text>`;
+      s+=`<text x="${cx}" y="${ty}" text-anchor="middle" font-size="${isLead?12.5:11}" font-weight="700" fill="${isLead?'white':'#1A1A1A'}">${escHtml(line)}</text>`;
       ty+=14;
     });
     if(role){
-      const roleLines=wrapText(role,isLead?20:18);
-      roleLines.forEach(line=>{
-        s+=`<text x="${cx}" y="${ty}" text-anchor="middle" font-size="9.5" fill="${isLead?'rgba(255,255,255,0.7)':'#9B9890'}">${escHtml(line)}</text>`;
+      const roleLines=wrapText(role,isLead?22:20);
+      roleLines.forEach((line,ri)=>{
+        if(ri>0) return; // max 1 role line
+        s+=`<text x="${cx}" y="${ty}" text-anchor="middle" font-size="9" fill="${isLead?'rgba(255,255,255,0.7)':'#9B9890'}">${escHtml(line)}</text>`;
         ty+=12;
       });
     }
-    if(oh) s+=`<text x="${x+w-7}" y="${y+14}" text-anchor="end" font-size="8" fill="#9B9890" font-weight="700">OH</text>`;
+    if(oh) s+=`<text x="${x+w-6}" y="${y+13}" text-anchor="end" font-size="8" fill="#9B9890" font-weight="700">OH</text>`;
   }
 
-  // -- Draw lead node -------------------------------------
+  // Draw lead
   if(lead){
     nodeBox(leadX,leadY,NW,NH,lead.name,lead.role||'','#1440B0','url(#leadGrad)',true,false,'#1B4FD8');
   }
 
-  // -- Draw all column nodes ------------------------------
+  // Draw column nodes
   cols.forEach(b=>{
     const bc=BUCKET_COLORS_ORG[b]||{node:'#64748B',bg:'#F5F5F5'};
     (bucketNodes[b]||[]).forEach(n=>{
@@ -11567,29 +11554,25 @@ function renderOrgSVG(){
 
   s+='</svg>';
 
-  // -- Shared panel ---------------------------------------
+  // Shared panel
   let sharedHtml='';
   if(shared.length){
-    sharedHtml=`<div class="org-shared-section">
-      <div class="org-shared-title">Shared Resources — not in hierarchy</div>
-      <div class="org-shared-grid">
-        ${shared.map(p=>`<div class="org-shared-card">
-          <div class="org-shared-name">${escHtml(p.name)}</div>
-          <div class="org-shared-role">${escHtml(p.role||'—')}</div>
-          <span class="org-shared-tag">Shared</span>
+    sharedHtml=`<div style="border-top:1px solid var(--border);padding:12px 16px;margin-top:8px">
+      <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:8px">Shared Resources</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        ${shared.map(p=>`<div style="background:var(--s2);border:1px dashed var(--border2);border-radius:6px;padding:7px 12px">
+          <div style="font-size:11.5px;font-weight:700;color:var(--t1)">${escHtml(p.name)}</div>
+          <div style="font-size:10px;color:var(--t3)">${escHtml(p.role||'—')}</div>
+          <span style="font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:3px;background:#E0F2FE;color:#0891B2">SHARED</span>
         </div>`).join('')}
       </div>
     </div>`;
   }
 
   area.innerHTML=`
-    <div class="org-chart-toolbar">
-      <div class="org-chart-title">${escHtml(currentProject.name||'Project')} — Project Team</div>
-    </div>
-    <div class="org-chart-svg-wrap" style="overflow-x:auto;text-align:center;">${s}</div>
+    <div style="overflow-x:auto;padding:8px 0">${s}</div>
     ${sharedHtml}`;
 }
-
 // Wrap text at max chars, break at spaces
 function wrapText(str,max){
   if(!str) return [''];
@@ -11724,6 +11707,22 @@ const DEFAULT_PHASES = [
 function ensurePhases() {
   if (!currentProject) return;
   if (!currentProject.phases) currentProject.phases = [];
+  if (currentProject.phases.length === 0) {
+    const p = currentProject;
+    const _ps = p.startMonth||0, _py = p.startYear||new Date().getFullYear();
+    const addM = (m,y,n) => { let nm=m+n; let ny=y+Math.floor(nm/12); nm=nm%12; return {m:nm,y:ny}; };
+    const _mob = addM(_ps,_py,8);
+    const _con = addM(_mob.m,_mob.y,2);
+    const _com = addM(_con.m,_con.y,10);
+    const _end = addM(_com.m,_com.y,4);
+    currentProject.phases = [
+      {id:'ph-'+uid(), label:'Design',        startMonth:_ps,    startYear:_py,      endMonth:_mob.m-1<0?11:_mob.m-1, endYear:_mob.m===0?_mob.y-1:_mob.y, colour:'#6366f1', milestones:[], expanded:true},
+      {id:'ph-'+uid(), label:'Mobilisation',  startMonth:_mob.m, startYear:_mob.y,   endMonth:_con.m-1<0?11:_con.m-1, endYear:_con.m===0?_con.y-1:_con.y, colour:'#f59e0b', milestones:[], expanded:true},
+      {id:'ph-'+uid(), label:'Construction',  startMonth:_con.m, startYear:_con.y,   endMonth:_com.m-1<0?11:_com.m-1, endYear:_com.m===0?_com.y-1:_com.y, colour:'#10b981', milestones:[], expanded:true},
+      {id:'ph-'+uid(), label:'Commissioning', startMonth:_com.m, startYear:_com.y,   endMonth:_end.m-1<0?11:_end.m-1, endYear:_end.m===0?_end.y-1:_end.y, colour:'#3b82f6', milestones:[], expanded:true},
+    ];
+    scheduleSave();
+  }
 }
 
 function progMonthOptions(selYear, selMonth) {
@@ -11888,26 +11887,26 @@ function renderProgramme() {
   const totalMonths  = winEndAbs - winStartAbs + 1;
 
   // -- v10 Bridge strip --
-  const progBs = document.getElementById('programmeBridgeStrip');
+  const progBs = document.getElementById('prelimsProgrammeBridgeStrip');
   if(progBs && phases.length){
     const fmMonth = (y,m) => new Date(y,m).toLocaleDateString('en-GB',{month:'short',year:'numeric'});
     progBs.style.display='grid';
     progBs.innerHTML=`
       <div class="mip-bs-item">
         <div class="mip-bs-label">Programme Duration</div>
-        <div class="mip-bs-val bright">${totalMonths}<span style="font-size:14px;opacity:.5"> mo</span></div>
+        <div class="mip-bs-val bright">${Math.round(totalMonths*4.33)}<span style="font-size:14px;opacity:.5"> wks</span></div>
         <div class="mip-bs-sub">${fmMonth(winStartY,winStartM)} → ${fmMonth(winEndY,winEndM)}</div>
       </div>
       <div class="mip-bs-divider"></div>
       <div class="mip-bs-item">
         <div class="mip-bs-label">Phases</div>
         <div class="mip-bs-val blue">${phases.length}</div>
-        <div class="mip-bs-sub">${phases.map(ph=>ph.label).join(' · ').substring(0,40)}</div>
+        <div class="mip-bs-sub">${phases.map(ph=>ph.label).join(' · ')}</div>
       </div>
       <div class="mip-bs-divider"></div>
       <div class="mip-bs-item">
         <div class="mip-bs-label">Longest Phase</div>
-        <div class="mip-bs-val">${(()=>{const ph=phases.reduce((a,b)=>{const la=(b.endYear*12+b.endMonth)-(b.startYear*12+b.startMonth);const aa=(a.endYear*12+a.endMonth)-(a.startYear*12+a.startMonth);return la>aa?b:a;});const len=(ph.endYear*12+ph.endMonth)-(ph.startYear*12+ph.startMonth)+1;return len+'<span style="font-size:14px;opacity:.5"> mo</span>';})()}</div>
+        <div class="mip-bs-val">${(()=>{const ph=phases.reduce((a,b)=>{const la=(b.endYear*12+b.endMonth)-(b.startYear*12+b.startMonth);const aa=(a.endYear*12+a.endMonth)-(a.startYear*12+a.startMonth);return la>aa?b:a;});const len=(ph.endYear*12+ph.endMonth)-(ph.startYear*12+ph.startMonth)+1;return Math.round(len*4.33)+'<span style="font-size:14px;opacity:.5"> wks</span>';})()}</div>
         <div class="mip-bs-sub">${(()=>{const ph=phases.reduce((a,b)=>{const la=(b.endYear*12+b.endMonth)-(b.startYear*12+b.startMonth);const aa=(a.endYear*12+a.endMonth)-(a.startYear*12+a.startMonth);return la>aa?b:a;});return ph.label;})()}</div>
       </div>`;
   }
@@ -11915,7 +11914,7 @@ function renderProgramme() {
   const warns = phaseWarnings(phases);
   const warnHtml = warns.map(w => `<div class="prog-warn">⚠️ ${w}</div>`).join('');
 
-  const COL_W = 56;
+  const COL_W = 52;
   const { yearBands, monthCells } = buildProgHeaders(winStartAbs, winEndAbs, COL_W);
 
   const phaseRows = phases.map((ph, idx) => {
@@ -11924,14 +11923,14 @@ function renderProgramme() {
     const leftPx  = (phStartAbs - winStartAbs) * COL_W;
     const widthPx = (phEndAbs - phStartAbs + 1) * COL_W;
     const phLen   = phEndAbs - phStartAbs + 1;
+    const phWks   = Math.round(phLen * 4.33);
     const pct     = Math.round(phLen / totalMonths * 100);
-    // Show % inside bar only if wide enough (>3 months), otherwise show outside to the right
     const labelInside  = phLen > 3;
     const barLabel     = labelInside
-      ? `<span style="pointer-events:none;flex:1;text-align:center">${pct}%</span>`
+      ? `<span style="pointer-events:none;flex:1;text-align:center">${pct}% · ${phWks}w</span>`
       : '';
     const outsideLabel = !labelInside
-      ? `<span style="position:absolute;left:${leftPx + widthPx + 6}px;top:50%;transform:translateY(-50%);font-size:9px;font-family:var(--mono);font-weight:600;color:var(--t2);white-space:nowrap;pointer-events:none">${pct}%</span>`
+      ? `<span style="position:absolute;left:${leftPx + widthPx + 6}px;top:50%;transform:translateY(-50%);font-size:9px;font-family:var(--mono);font-weight:600;color:var(--t2);white-space:nowrap;pointer-events:none">${pct}% · ${phWks}w</span>`
       : '';
     const isFirst = idx === 0;
     const isLast  = idx === phases.length - 1;
@@ -11981,7 +11980,7 @@ function renderProgramme() {
           ${progMonthOptions(ph.endYear, ph.endMonth)}
         </select>
       </div>
-      <div class="prog-phase-dur">${dur} mo · ${phaseMonthsToWeeks(dur)} wks</div>
+      <div class="prog-phase-dur">${Math.round(dur*4.33)} wks</div>
       <div class="prog-phase-pct">${pct}%</div>
       <button class="prog-del-btn" onclick="progDeletePhase('${ph.id}')" title="Remove phase">✕</button>
     </div>`;
@@ -12016,7 +12015,7 @@ function renderProgramme() {
 
 // -- Drag engine ----------------------------------------------
 function progInitDrag() {
-  const COL_W = 48;
+  const COL_W = 52;
   const tooltip = document.getElementById('progDragTooltip');
   const MONTH_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   let dragging = null;
@@ -13731,7 +13730,7 @@ function histPrelimsItems(prelims) {
     .map(p => ({
       label: p.name || 'Unnamed',
       sub:   p.role || '',
-      val:   getPersonTotal(p, c),
+      val:   getPersonTotals(p, c).total,
     }));
 }
 
@@ -13916,7 +13915,7 @@ function asmGetPrelimsTotal(revId) {
   const c = rev.data.controls || {};
   return items.reduce((sum, p) => {
     if (p.treatment !== 'Costed') return sum;
-    return sum + getPersonTotal(p, c);
+    return sum + getPersonTotals(p, c).total;
   }, 0);
 }
 
@@ -14884,7 +14883,7 @@ function openProject(id){
   _odId = null;
   _odBucket = null;
   // Clear rendered panel content to prevent stale DOM from previous project
-  ['mipOuter','logTimeline','histTreeList','submitOuter','orgEditor','orgSvgArea'].forEach(id=>{
+  ['mipOuter','logTimeline','histTreeList','submitOuter','orgEditorNew','orgSvgArea'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.innerHTML='';
   });
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -15986,7 +15985,7 @@ function ensureMip(){
 function calcPrelimsRowTotal(row){
   if(!currentProject||!row) return 0;
   const c=currentProject.prelimControls||{year:2025,inflation:3,miles:0,mileage:0.45,lodge:120};
-  return getPersonTotal(row,c);
+  return getPersonTotals(row,c).total;
 }
 function calcPrelimsRowMonths(row){
   if(!row||!row.spread) return 0;
